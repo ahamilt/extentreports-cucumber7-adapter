@@ -224,6 +224,7 @@ public class ExtentCucumberAdapter implements ConcurrentEventListener {
 		default:
 			break;
 		}
+		ExtentService.flush();
 	}
 
 	private synchronized void handleEmbed(EmbedEvent event) {
