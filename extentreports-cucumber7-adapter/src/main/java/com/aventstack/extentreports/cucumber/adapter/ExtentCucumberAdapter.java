@@ -7,6 +7,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Base64;
@@ -84,6 +85,7 @@ public class ExtentCucumberAdapter implements ConcurrentEventListener {
 			// TODO Video, txt, html, pdf etc.
 			// put("video/ogg", "ogg");
 			// put("video/mp4", "mp4");
+			put("text/uri-list+video/mp4", "NOT_APPLICABLE");
 		}
 	};
 
@@ -238,7 +240,12 @@ public class ExtentCucumberAdapter implements ConcurrentEventListener {
 			}
 
 			String title = event.getName() == null ? "" : event.getName();
-			if (ExtentService.isBase64ImageSrcEnabled() && mimeType.startsWith("image/")) {
+			if ("text/uri-list+video/mp4".equals(mimeType)) {
+				// Path
+				String path = new String(event.getData(), StandardCharsets.UTF_8);
+				stepTestThreadLocal.get().info("<video controls>" +
+						"<source src=\"" + path + "\"></video>");
+			} else if (ExtentService.isBase64ImageSrcEnabled() && mimeType.startsWith("image/")) {
 				stepTestThreadLocal.get().info(title, MediaEntityBuilder
 						.createScreenCaptureFromBase64String(Base64.getEncoder().encodeToString(event.getData()))
 						.build());
